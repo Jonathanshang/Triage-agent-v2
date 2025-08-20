@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test - BI Triage Agent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>BI Triage Agent - Debug Test</h1>
+    
+    <div class="test-section">
+        <h2>API Connection Test</h2>
+        <button onclick="testAPI()">Test API Connection</button>
+        <div id="apiResult" class="log"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Start Conversation Test</h2>
+        <button onclick="testStartConversation()">Start BI Request</button>
+        <div id="conversationResult" class="log"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Logs</h2>
+        <button onclick="clearLogs()">Clear Logs</button>
+        <div id="consoleLogs" class="log"></div>
+    </div>
+
+    <script>
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToDiv('consoleLogs', '[LOG] ' + args.join(' '), 'success');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToDiv('consoleLogs', '[ERROR] ' + args.join(' '), 'error');
+        };
+        
+        function logToDiv(divId, message, className = '') {
+            const div = document.getElementById(divId);
+            const timestamp = new Date().toLocaleTimeString();
+            div.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            div.scrollTop = div.scrollHeight;
+        }
+        
+        function clearLogs() {
+            document.getElementById('consoleLogs').innerHTML = '';
+        }
+        
+        async function testAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = 'Testing API connection...';
+            
+            try {
+                const response = await fetch('/api/admin/tickets');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logToDiv('apiResult', `✅ API Connection Success!\nFound ${data.length} tickets`, 'success');
+                } else {
+                    logToDiv('apiResult', `❌ API Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                logToDiv('apiResult', `❌ Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testStartConversation() {
+            const resultDiv = document.getElementById('conversationResult');
+            resultDiv.innerHTML = 'Testing conversation start...';
+            
+            try {
+                console.log('Starting conversation test...');
+                
+                const response = await fetch('/api/conversation/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: 'test_user',
+                        userName: 'Test User'
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (response.ok) {
+                    logToDiv('conversationResult', `✅ Conversation Started!\nID: ${data.conversationId}\nMessage: ${data.message}`, 'success');
+                } else {
+                    logToDiv('conversationResult', `❌ Conversation Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('Conversation test error:', error);
+                logToDiv('conversationResult', `❌ Network Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test on page load
+        window.addEventListener('load', function() {
+            console.log('Debug page loaded');
+            testAPI();
+        });
+    </script>
+</body>
+</html>

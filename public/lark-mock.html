@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lark - BI Team Group Chat</title>
+    <link rel="stylesheet" href="lark-styles.css">
+</head>
+<body>
+    <div class="lark-app">
+        <!-- Lark Sidebar -->
+        <div class="lark-sidebar">
+            <div class="lark-header">
+                <div class="lark-logo">
+                    <span class="lark-icon">🚀</span>
+                    <span class="lark-title">Lark</span>
+                </div>
+                <div class="user-avatar">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%234f46e5'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3EJS%3C/text%3E%3C/svg%3E" alt="Jonathan Shang" />
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Chats</div>
+                <div class="chat-list">
+                    <div class="chat-item active">
+                        <div class="chat-avatar group-avatar">
+                            <span>📊</span>
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">BI Team</div>
+                            <div class="chat-preview">@BI Agent: I'm ready to help...</div>
+                        </div>
+                        <div class="chat-badge">3</div>
+                    </div>
+                    
+                    <div class="chat-item">
+                        <div class="chat-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310b981'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ESM%3C/text%3E%3C/svg%3E" alt="Sarah Miller" />
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">Sarah Miller</div>
+                            <div class="chat-preview">Thanks for the report!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-item">
+                        <div class="chat-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23f59e0b'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3EMC%3C/text%3E%3C/svg%3E" alt="Mike Chen" />
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">Mike Chen</div>
+                            <div class="chat-preview">Let's schedule a meeting</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Groups</div>
+                <div class="chat-list">
+                    <div class="chat-item">
+                        <div class="chat-avatar group-avatar">
+                            <span>💼</span>
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">Sales Team</div>
+                            <div class="chat-preview">Q4 numbers look good</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-item">
+                        <div class="chat-avatar group-avatar">
+                            <span>🎨</span>
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">Product Design</div>
+                            <div class="chat-preview">New mockups ready</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Bots</div>
+                <div class="chat-list">
+                    <div class="chat-item bot-item">
+                        <div class="chat-avatar bot-avatar">
+                            <span>🤖</span>
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">BI Agent</div>
+                            <div class="chat-status online">Online</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="lark-main">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar group-avatar">
+                        <span>📊</span>
+                    </div>
+                    <div class="chat-details">
+                        <div class="chat-title">BI Team</div>
+                        <div class="chat-members">
+                            <span class="member-count">8 members</span>
+                            <span class="member-list">Jonathan Shang, Sarah Miller, Mike Chen, BI Agent, +4 more</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" title="Call">📞</button>
+                    <button class="action-btn" title="Video">📹</button>
+                    <button class="action-btn" title="More">⋯</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="larkMessages">
+                <!-- Welcome messages -->
+                <div class="message-group">
+                    <div class="message-date">Today</div>
+                </div>
+                
+                <div class="message system-message">
+                    <div class="system-content">
+                        <span class="system-icon">🤖</span>
+                        <span class="system-text">BI Agent joined the group</span>
+                    </div>
+                </div>
+                
+                <div class="message bot-message">
+                    <div class="message-avatar bot-avatar">
+                        <span>🤖</span>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">BI Agent</span>
+                            <span class="message-time">9:00 AM</span>
+                            <span class="bot-badge">BOT</span>
+                        </div>
+                        <div class="message-body">
+                            <div class="lark-card">
+                                <div class="card-header">
+                                    <span class="card-icon">👋</span>
+                                    <span class="card-title">Welcome to BI Triage Agent!</span>
+                                </div>
+                                <div class="card-content">
+                                    <p>Hi everyone! I'm your BI Triage Agent, ready to help streamline your Business Intelligence requests.</p>
+                                    <p><strong>How to get started:</strong></p>
+                                    <ul>
+                                        <li>Mention me with <code>@BI Agent</code> to start a new request</li>
+                                        <li>I'll guide you through a conversation to gather all necessary details</li>
+                                        <li>I'll automatically create a structured ticket for the BI team</li>
+                                    </ul>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="lark-btn primary" onclick="startBIRequestFromButton()">
+                                        <span class="btn-icon">🚀</span>
+                                        Start BI Request
+                                    </button>
+                                    <button class="lark-btn secondary" onclick="showHelp()">
+                                        <span class="btn-icon">❓</span>
+                                        Help
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message user-message">
+                    <div class="message-avatar">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310b981'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ESM%3C/text%3E%3C/svg%3E" alt="Sarah Miller" />
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">Sarah Miller</span>
+                            <span class="message-time">9:15 AM</span>
+                        </div>
+                        <div class="message-body">
+                            This looks great! Much better than filling out those long forms. 👍
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message user-message">
+                    <div class="message-avatar">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23f59e0b'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3EMC%3C/text%3E%3C/svg%3E" alt="Mike Chen" />
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">Mike Chen</span>
+                            <span class="message-time">9:16 AM</span>
+                        </div>
+                        <div class="message-body">
+                            Perfect timing! I need help with a sales dashboard. Let me try this out.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <div class="input-toolbar">
+                        <button class="toolbar-btn" title="Emoji">😊</button>
+                        <button class="toolbar-btn" title="Attach">📎</button>
+                        <button class="toolbar-btn" title="Mention">@</button>
+                        <button class="toolbar-btn" title="Format">🎨</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <div class="input-field" contenteditable="true" id="messageInput" placeholder="Type a message... (Try typing '@BI Agent' to mention the bot)"></div>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                            <span class="send-icon">➤</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mention-suggestions" id="mentionSuggestions" style="display: none;">
+                    <div class="suggestion-item" onclick="selectMention('BI Agent')">
+                        <div class="suggestion-avatar bot-avatar">
+                            <span>🤖</span>
+                        </div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">BI Agent</div>
+                            <div class="suggestion-desc">Business Intelligence Triage Bot</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel (Optional) -->
+        <div class="lark-right-panel" id="rightPanel" style="display: none;">
+            <div class="panel-header">
+                <h3>Group Info</h3>
+                <button class="close-panel" onclick="closeRightPanel()">×</button>
+            </div>
+            <div class="panel-content">
+                <div class="group-members">
+                    <h4>Members (8)</h4>
+                    <div class="member-list">
+                        <div class="member-item">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%234f46e5'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3EJS%3C/text%3E%3C/svg%3E" alt="Jonathan Shang" />
+                            <span>Jonathan Shang (You)</span>
+                        </div>
+                        <div class="member-item">
+                            <div class="bot-avatar"><span>🤖</span></div>
+                            <span>BI Agent <span class="bot-badge">BOT</span></span>
+                        </div>
+                        <div class="member-item">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310b981'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ESM%3C/text%3E%3C/svg%3E" alt="Sarah Miller" />
+                            <span>Sarah Miller</span>
+                        </div>
+                        <div class="member-item">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23f59e0b'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3EMC%3C/text%3E%3C/svg%3E" alt="Mike Chen" />
+                            <span>Mike Chen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notificationToast" style="display: none;">
+        <div class="toast-content">
+            <span class="toast-icon">🔔</span>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+    
+    <script src="lark-mock.js"></script>
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lark Base - BI Tickets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #1f2329;
+        }
+
+        .lark-base-header {
+            background: white;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .base-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .base-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .base-info h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .base-info p {
+            font-size: 12px;
+            color: #86909c;
+        }
+
+        .base-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid #e8e8e8;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #f2f3f5;
+        }
+
+        .action-btn.primary {
+            background: #1664ff;
+            color: white;
+            border-color: #1664ff;
+        }
+
+        .action-btn.primary:hover {
+            background: #0e4ba8;
+        }
+
+        .base-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .table-header {
+            background: white;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid #e8e8e8;
+            border-bottom: none;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .table-stats {
+            font-size: 12px;
+            color: #86909c;
+        }
+
+        .data-table {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #fafafa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #4e5969;
+            border-bottom: 1px solid #e8e8e8;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f2f3f5;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .ticket-number {
+            font-weight: 600;
+            color: #1664ff;
+            cursor: pointer;
+        }
+
+        .ticket-number:hover {
+            text-decoration: underline;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-new { background: #e8f4ff; color: #1664ff; }
+        .status-in-progress { background: #fff7e6; color: #fa8c16; }
+        .status-completed { background: #f6ffed; color: #52c41a; }
+        .status-on-hold { background: #f9f0ff; color: #722ed1; }
+        .status-closed { background: #f5f5f5; color: #8c8c8c; }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .priority-p0 { background: #fff2f0; color: #ff4d4f; }
+        .priority-p1 { background: #fff7e6; color: #fa8c16; }
+        .priority-p2 { background: #e8f4ff; color: #1664ff; }
+        .priority-p3 { background: #f6ffed; color: #52c41a; }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .difficulty-low { background: #f6ffed; color: #52c41a; }
+        .difficulty-medium { background: #fff7e6; color: #fa8c16; }
+        .difficulty-high { background: #fff2f0; color: #ff4d4f; }
+
+        .text-truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .date-cell {
+            color: #86909c;
+            font-size: 12px;
+        }
+
+        .owner-cell {
+            color: #4e5969;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #86909c;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #86909c;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #f2f3f5;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #86909c;
+        }
+
+        .refresh-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #52c41a;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .filter-bar {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-bottom: none;
+            padding: 12px 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-select {
+            padding: 4px 8px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1664ff;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #86909c;
+        }
+    </style>
+</head>
+<body>
+    <div class="lark-base-header">
+        <div class="base-title">
+            <div class="base-icon">📊</div>
+            <div class="base-info">
+                <h1>BI Tickets Database</h1>
+                <p>Business Intelligence Request Management</p>
+            </div>
+        </div>
+        <div class="base-actions">
+            <button class="action-btn" onclick="window.open('/lark-mock.html', '_blank')">
+                💬 Back to Chat
+            </button>
+            <button class="action-btn" onclick="window.open('/admin', '_blank')">
+                🛠️ Admin View
+            </button>
+            <button class="action-btn primary" onclick="refreshData()">
+                🔄 Refresh
+            </button>
+        </div>
+    </div>
+
+    <div class="base-container">
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stats will be loaded here -->
+        </div>
+
+        <div class="table-header">
+            <div>
+                <div class="table-title">All BI Tickets</div>
+                <div class="table-stats" id="tableStats">Loading...</div>
+            </div>
+            <div class="auto-refresh">
+                <div class="refresh-indicator"></div>
+                <span>Auto-refresh every 30s</span>
+                <button class="refresh-btn" onclick="refreshData()" title="Refresh now">
+                    🔄
+                </button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <div class="filter-item">
+                <label>Status:</label>
+                <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+                    <option value="">All</option>
+                    <option value="New">New</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="On Hold">On Hold</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Priority:</label>
+                <select class="filter-select" id="priorityFilter" onchange="applyFilters()">
+                    <option value="">All</option>
+                    <option value="P0">P0 - Critical</option>
+                    <option value="P1">P1 - High</option>
+                    <option value="P2">P2 - Medium</option>
+                    <option value="P3">P3 - Low</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Type:</label>
+                <select class="filter-select" id="typeFilter" onchange="applyFilters()">
+                    <option value="">All</option>
+                    <option value="Troubleshooting">Troubleshooting</option>
+                    <option value="Reporting/Dashboard">Reporting/Dashboard</option>
+                    <option value="Automation">Automation</option>
+                    <option value="User Access">User Access</option>
+                    <option value="Tool-related Changes">Tool Changes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="data-table">
+            <div class="table-wrapper">
+                <div id="tableContainer">
+                    <div class="loading-state">
+                        <div>Loading tickets...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allTickets = [];
+        let filteredTickets = [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTickets();
+            
+            // Set up auto-refresh
+            setInterval(loadTickets, 30000); // Refresh every 30 seconds
+        });
+
+        async function loadTickets() {
+            try {
+                const response = await fetch('/api/admin/tickets');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    allTickets = data;
+                    applyFilters();
+                    updateStats();
+                } else {
+                    throw new Error(data.error || 'Failed to load tickets');
+                }
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                showError('Failed to load tickets. Please try again.');
+            }
+        }
+
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            filteredTickets = allTickets.filter(ticket => {
+                return (!statusFilter || ticket.status === statusFilter) &&
+                       (!priorityFilter || ticket.priority === priorityFilter) &&
+                       (!typeFilter || ticket.request_type === typeFilter);
+            });
+
+            renderTable();
+            updateTableStats();
+        }
+
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            
+            if (filteredTickets.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div>No tickets found</div>
+                        <div style="font-size: 12px; margin-top: 8px;">Try adjusting your filters or create a new ticket</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Created Date</th>
+                        <th>Requester</th>
+                        <th>Type</th>
+                        <th>Summary</th>
+                        <th>Impact</th>
+                        <th>Priority</th>
+                        <th>Difficulty</th>
+                        <th>Status</th>
+                        <th>Owner</th>
+                        <th>Est. Start</th>
+                        <th>Est. End</th>
+                        <th>Links</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredTickets.map(ticket => `
+                        <tr>
+                            <td>
+                                <span class="ticket-number" onclick="viewTicket('${ticket.id}')">${ticket.ticket_number}</span>
+                            </td>
+                            <td class="date-cell">${formatDate(ticket.created_date)}</td>
+                            <td>${ticket.requester_name}</td>
+                            <td>${ticket.request_type}</td>
+                            <td class="text-truncate" title="${ticket.summary}">${ticket.summary}</td>
+                            <td class="text-truncate" title="${ticket.impact || 'Not specified'}">${ticket.impact || 'Not specified'}</td>
+                            <td>
+                                <span class="priority-badge priority-${ticket.priority.toLowerCase()}">${ticket.priority}</span>
+                            </td>
+                            <td>
+                                <span class="difficulty-badge difficulty-${ticket.difficulty.toLowerCase()}">${ticket.difficulty}</span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-${ticket.status.toLowerCase().replace(' ', '-')}">${ticket.status}</span>
+                            </td>
+                            <td class="owner-cell">${ticket.ticket_owner || 'Unassigned'}</td>
+                            <td class="date-cell">${ticket.estimated_start_date ? formatDate(ticket.estimated_start_date) : '-'}</td>
+                            <td class="date-cell">${ticket.estimated_end_date ? formatDate(ticket.estimated_end_date) : '-'}</td>
+                            <td class="text-truncate">${ticket.links ? `<a href="${ticket.links}" target="_blank" style="color: #1664ff;">View</a>` : '-'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+
+            container.innerHTML = '';
+            container.appendChild(table);
+        }
+
+        function updateStats() {
+            const stats = calculateStats(allTickets);
+            const statsGrid = document.getElementById('statsGrid');
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <span class="stat-number">${stats.total}</span>
+                    <div class="stat-label">Total Tickets</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.new}</span>
+                    <div class="stat-label">New</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.inProgress}</span>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.completed}</span>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.highPriority}</span>
+                    <div class="stat-label">High Priority</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${stats.avgResponseTime}</span>
+                    <div class="stat-label">Avg Response</div>
+                </div>
+            `;
+        }
+
+        function updateTableStats() {
+            const statsElement = document.getElementById('tableStats');
+            statsElement.textContent = `Showing ${filteredTickets.length} of ${allTickets.length} tickets`;
+        }
+
+        function calculateStats(tickets) {
+            const total = tickets.length;
+            const new_ = tickets.filter(t => t.status === 'New').length;
+            const inProgress = tickets.filter(t => t.status === 'In Progress').length;
+            const completed = tickets.filter(t => t.status === 'Completed' || t.status === 'Closed').length;
+            const highPriority = tickets.filter(t => t.priority === 'P0' || t.priority === 'P1').length;
+            
+            return {
+                total,
+                new: new_,
+                inProgress,
+                completed,
+                highPriority,
+                avgResponseTime: total > 0 ? '2.3 days' : '0 days'
+            };
+        }
+
+        function viewTicket(ticketId) {
+            const ticket = allTickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            alert(`Ticket Details:\n\nNumber: ${ticket.ticket_number}\nRequester: ${ticket.requester_name}\nType: ${ticket.request_type}\nSummary: ${ticket.summary}\nImpact: ${ticket.impact}\nPriority: ${ticket.priority}\nDifficulty: ${ticket.difficulty}\nStatus: ${ticket.status}\nCreated: ${formatDate(ticket.created_date)}`);
+        }
+
+        function refreshData() {
+            loadTickets();
+        }
+
+        function showError(message) {
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">❌</div>
+                    <div>Error Loading Data</div>
+                    <div style="font-size: 12px; margin-top: 8px;">${message}</div>
+                    <button class="action-btn primary" onclick="refreshData()" style="margin-top: 16px;">
+                        Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+    </script>
+</body>
+</html>

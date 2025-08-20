@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lark BI Triage Agent - Mock</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="app-title">
+                    <span class="lark-icon">🚀</span>
+                    <h1>BI Triage Agent</h1>
+                    <span class="beta-badge">MOCK</span>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="userName">Jonathan Shang</span>
+                    <span class="user-status">Online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Container -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome message will be inserted here -->
+            </div>
+            
+            <!-- Input Area -->
+            <div class="input-area" id="inputArea">
+                <div class="start-conversation">
+                    <button class="start-btn" id="startBtn">
+                        <span class="btn-icon">💬</span>
+                        Start New BI Request
+                    </button>
+                    <p class="help-text">Click to begin a guided conversation with the BI Triage Agent</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>Quick Actions</h3>
+                <button class="sidebar-btn" onclick="checkTicketStatus()">
+                    <span class="btn-icon">🔍</span>
+                    Check Ticket Status
+                </button>
+                <button class="sidebar-btn" onclick="viewAdminDashboard()">
+                    <span class="btn-icon">📊</span>
+                    Admin Dashboard
+                </button>
+                <button class="sidebar-btn" onclick="resetConversation()">
+                    <span class="btn-icon">🔄</span>
+                    Reset Conversation
+                </button>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Request Types</h3>
+                <div class="request-types-info">
+                    <div class="request-type-item">
+                        <span class="type-icon">🔧</span>
+                        <span>Troubleshooting</span>
+                    </div>
+                    <div class="request-type-item">
+                        <span class="type-icon">📊</span>
+                        <span>Reporting/Dashboard</span>
+                    </div>
+                    <div class="request-type-item">
+                        <span class="type-icon">⚡</span>
+                        <span>Automation</span>
+                    </div>
+                    <div class="request-type-item">
+                        <span class="type-icon">🔐</span>
+                        <span>User Access</span>
+                    </div>
+                    <div class="request-type-item">
+                        <span class="type-icon">🛠️</span>
+                        <span>Tool Changes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for ticket status check -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Check Ticket Status</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="ticketNumberInput" placeholder="Enter ticket number (e.g., BI-123456)" />
+                <button class="search-btn" onclick="searchTicket()">Search</button>
+                <div id="ticketResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

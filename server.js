@@ -134,10 +134,7 @@ const REQUEST_TYPES = {
     'troubleshooting': {
         name: 'Troubleshooting',
         questions: [
-            'What specific issue are you experiencing?',
-            'What steps have you already tried?',
-            'When did this issue first occur?',
-            'How is this affecting your daily work?'
+            'What specific issue are you experiencing? Please provide relevant links and BO account name.'
         ]
     },
     'reporting': {
@@ -297,32 +294,80 @@ app.post('/api/conversation/respond', async (req, res) => {
                     });
                 });
         } else {
-            // All questions answered, now ask about impact and timeline
-            collectedData.currentStep = 'impact_timeline';
-            
-            db.run(`UPDATE conversations SET 
-                    current_step = 'impact_timeline',
-                    collected_data = ?,
-                    updated_date = CURRENT_TIMESTAMP
-                    WHERE id = ?`,
-                [JSON.stringify(collectedData), conversationId],
-                function(err) {
-                    if (err) {
-                        return res.status(500).json({ error: err.message });
-                    }
+            // All questions answered
+            // For troubleshooting, skip impact/timeline and go straight to confirmation
+            if (collectedData.requestType === 'troubleshooting') {
+                // Set default values for troubleshooting
+                collectedData.responses.impact = 'System/dashboard issue affecting daily operations';
+                collectedData.responses.timeline = 'ASAP - operational issue';
+                collectedData.responses.frequency = 'One-time fix';
+                collectedData.responses.requirements = 'Restore normal functionality';
+                collectedData.responses.links = collectedData.responses.question_0 || '';
+                
+                // Generate summary using mock Gemini
+                const summary = await MockGeminiAPI.summarizeRequest(collectedData);
+                const { priority, difficulty } = await MockGeminiAPI.rateUrgencyAndDifficulty(collectedData);
 
-                    res.json({
-                        message: "Perfect! Now I need to understand the business impact and timeline.",
-                        questions: [
-                            "What happens if this request isn't fulfilled? How does it affect your work or decision-making?",
-                            "When do you need this completed?",
-                            "Is this a one-time request or ongoing need?",
-                            "Are there any specific requirements or constraints I should know about?",
-                            "Please provide any relevant links, reports, or snapshots that can serve as reference."
-                        ],
-                        currentStep: 'impact_timeline'
+                collectedData.summary = summary;
+                collectedData.priority = priority;
+                collectedData.difficulty = difficulty;
+                collectedData.currentStep = 'confirmation';
+
+                db.run(`UPDATE conversations SET 
+                        current_step = 'confirmation',
+                        collected_data = ?,
+                        updated_date = CURRENT_TIMESTAMP
+                        WHERE id = ?`,
+                    [JSON.stringify(collectedData), conversationId],
+                    function(err) {
+                        if (err) {
+                            return res.status(500).json({ error: err.message });
+                        }
+
+                        res.json({
+                            message: "Thank you! I've analyzed your troubleshooting request and prepared a summary. Please review and confirm:",
+                            summary: {
+                                requestType: REQUEST_TYPES[collectedData.requestType].name,
+                                summary: summary,
+                                priority: priority,
+                                difficulty: difficulty,
+                                impact: collectedData.responses.impact,
+                                timeline: collectedData.responses.timeline,
+                                frequency: collectedData.responses.frequency,
+                                requirements: collectedData.responses.requirements,
+                                links: collectedData.responses.links
+                            },
+                            currentStep: 'confirmation'
+                        });
                     });
-                });
+            } else {
+                // For other request types, continue with impact and timeline questions
+                collectedData.currentStep = 'impact_timeline';
+                
+                db.run(`UPDATE conversations SET 
+                        current_step = 'impact_timeline',
+                        collected_data = ?,
+                        updated_date = CURRENT_TIMESTAMP
+                        WHERE id = ?`,
+                    [JSON.stringify(collectedData), conversationId],
+                    function(err) {
+                        if (err) {
+                            return res.status(500).json({ error: err.message });
+                        }
+
+                        res.json({
+                            message: "Perfect! Now I need to understand the business impact and timeline.",
+                            questions: [
+                                "What happens if this request isn't fulfilled? How does it affect your work or decision-making?",
+                                "When do you need this completed?",
+                                "Is this a one-time request or ongoing need?",
+                                "Are there any specific requirements or constraints I should know about?",
+                                "Please provide any relevant links, reports, or snapshots that can serve as reference."
+                            ],
+                            currentStep: 'impact_timeline'
+                        });
+                    });
+            }
         }
     });
 });

@@ -220,6 +220,7 @@
 
         async function selectRequestType(typeId, typeName) {
             log(`Selected request type: ${typeId}`);
+            window.selectedRequestType = typeId; // Store for later use
             addMessage('You', `Selected: ${typeName}`);
             
             try {
@@ -275,8 +276,18 @@
             addMessage('You', response);
             textarea.disabled = true;
             
-            // Continue with the conversation flow...
-            addMessage('BI Agent', 'Thank you! This is a simplified test. In the full version, I would continue asking questions and eventually create your ticket.', true);
+                                // For troubleshooting, go straight to ticket creation
+                    if (window.selectedRequestType === 'troubleshooting') {
+                        addMessage('BI Agent', 'Perfect! For troubleshooting requests, I have everything I need. Creating your ticket now...', true);
+                        
+                        setTimeout(() => {
+                            const ticketNumber = `BI-${Date.now().toString().slice(-6)}`;
+                            addMessage('BI Agent', `✅ Ticket Created Successfully!\n\n**Ticket Number:** ${ticketNumber}\n**Type:** Troubleshooting\n**Priority:** P1 (High - Operational Issue)\n**Status:** New\n\nYour troubleshooting request has been submitted to the BI team. They will investigate and respond as soon as possible.`, true);
+                        }, 1500);
+                    } else {
+                        // Continue with the conversation flow for other types...
+                        addMessage('BI Agent', 'Thank you! This is a simplified test. In the full version, I would continue asking questions and eventually create your ticket.', true);
+                    }
         }
 
         // Allow Enter key to send message

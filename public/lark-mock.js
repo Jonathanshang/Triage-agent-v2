@@ -87,8 +87,11 @@ async function sendMessage() {
     input.textContent = '';
     
     // Check if this is a bot mention to start BI request
-    if (message.includes('@BI Agent') && !isInConversation) {
+    if (message.includes('@BI Agent')) {
         console.log('Bot mention detected, starting BI request');
+        // Reset conversation state and start fresh
+        isInConversation = false;
+        
         // Prevent multiple rapid clicks
         const sendBtn = document.getElementById('sendBtn');
         sendBtn.disabled = true;
@@ -277,6 +280,9 @@ async function submitQuestionResponse(response, questionIndex, totalQuestions) {
             } else if (data.currentStep === 'impact_timeline') {
                 // Show impact and timeline form
                 showImpactTimelineForm(data.questions);
+            } else if (data.currentStep === 'confirmation') {
+                // For troubleshooting - go straight to confirmation
+                showSummaryConfirmation(data.summary);
             }
             
         } else {
@@ -405,14 +411,9 @@ async function confirmRequest(confirmed) {
                     content: `Your BI request has been submitted successfully.\n\n**Ticket Number:** ${data.ticket.ticketNumber}\n**Status:** ${data.ticket.status}\n**Priority:** ${data.ticket.priority}`,
                     actions: [
                         {
-                            id: 'new_request',
-                            text: '➕ New Request',
-                            primary: true,
-                            action: () => resetConversation()
-                        },
-                        {
                             id: 'view_tickets',
                             text: '📊 View All Tickets',
+                            primary: true,
                             action: () => window.open('/lark-base', '_blank')
                         }
                     ]
@@ -714,6 +715,22 @@ function resetConversation() {
         userId: 'user_001',
         userName: 'Jonathan Shang'
     };
+    
+    // Add a new bot message to restart the conversation
+    setTimeout(() => {
+        addBotMessage(`👋 Ready for a new BI request! 
+
+I'm here to help you submit another well-structured Business Intelligence request. 
+
+**What I can help you with:**
+• 🔧 Troubleshooting - Fix issues with existing reports or dashboards
+• 📊 Reporting/Dashboard - Create new reports or modify existing ones  
+• ⚡ Automation - Set up automated processes or alerts
+• 🔐 User Access - Manage permissions and access rights
+• 🛠️ Tool Changes - Configuration changes or new tool requests
+
+Type "@BI Agent" followed by your request to get started!`);
+    }, 500);
 }
 
 function showNotification(message) {
